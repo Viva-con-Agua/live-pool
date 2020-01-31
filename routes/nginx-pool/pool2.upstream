@@ -1,0 +1,103 @@
+#########
+# Drops #
+#########
+
+upstream arise {
+  server 172.2.50.1:80;
+}
+
+upstream drops {
+  server 172.2.100.1:9000;
+}
+
+#########
+# Emoto #
+#########
+
+upstream emoto-frontend {
+  server 172.2.50.4:80;
+}
+
+upstream emoto-backend {
+  server 172.2.0.7:3000;
+}
+
+#########
+# Canal #
+#########
+
+upstream canal-frontend {
+  server 172.2.50.5:80;
+}
+upstream canal-backend {
+  server 172.2.0.33:8000;
+}
+
+#############
+# Dispenser #
+#############
+
+upstream dispenser {
+  server 172.2.100.4:9000;
+}
+
+upstream dispenserassets {
+  server 172.2.0.6:8080;
+}
+
+#########
+# Pool1 #
+#########
+
+upstream pool {
+  server 172.2.0.10:80;
+}
+
+########
+# Wiki #
+########
+
+upstream wiki {
+  server 172.2.0.15:80;
+}
+
+#######
+# PHP #
+#######
+
+upstream php {
+  server unix:/tmp/php-cgi.socket;
+  server 172.2.0.9:9000;
+}
+
+upstream oauthtest {
+  server 172.2.100.3:9000;
+}
+
+###################
+# Atlassian Suite #
+###################
+
+# Confluence
+upstream confluence {
+  server 172.2.10.1:8090;
+}
+
+# Jira Server Core
+upstream jira {
+  server 172.2.10.2:8080;
+}
+
+# Bitbucket Server
+upstream bitbucket {
+  server 172.2.10.3:7990;
+}
+
+##########
+# Assets #
+##########
+
+upstream assets-backend {
+  server 172.2.100.6:1323;
+}
+

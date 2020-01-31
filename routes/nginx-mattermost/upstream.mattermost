@@ -1,0 +1,3 @@
+upstream mattermost {
+  server 172.2.2.1:8000;
+}

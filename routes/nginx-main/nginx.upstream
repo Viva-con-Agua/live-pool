@@ -1,0 +1,6 @@
+upstream nginx-pool {
+	server 172.2.20.1:80;
+}
+upstream nginx-mattermost {
+	server 172.2.20.2:80;
+}

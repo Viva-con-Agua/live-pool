@@ -1,0 +1,139 @@
+######
+# docker-compose for live deployment
+#######
+
+version: '3'
+
+services:
+  #########
+  # Nginx #
+  #########
+
+  nginx-main:
+    image: nginx:1.13.7
+    container_name: nginx-main
+    restart: unless-stopped
+    volumes:
+      - ./routes/nginx-main/:/etc/nginx/conf.d/
+      - ../cert/wildcard.vivaconagua.org.chained.crt:/etc/nginx/wildcard.vivaconagua.org.chained.crt
+      - ../cert/wildcard.vivaconagua.org.key:/etc/nginx/wildcard.vivaconagua.org.key
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      default:
+        ipv4_address: 172.2.20.1
+
+  nginx-pool:
+    image: nginx:1.13.7
+    container_name: nginx-pool
+    restart: unless-stopped
+    volumes:
+      - ./routes/nginx-pool/:/etc/nginx/conf.d/
+    networks:
+      default:
+        ipv4_address: 172.2.20.2
+
+
+  nginx-mattermost:
+    image: nginx:1.13.7
+    container_name: nginx-mattermost
+    restart: unless-stopped
+    volumes:
+      - ./routes/nginx-mattermost/:/etc/nginx/conf.d/
+    networks:
+      default:
+        ipv4_address: 172.2.20.3
+  
+  #########
+  # Drops #
+  #########
+  
+  arise:
+    image: vivaconagua/arise:latest
+    container_name: arise
+    restart: unless-stopped
+    networks:
+      default:
+        ipv4_address: 172.2.50.1
+  
+  drops:
+    image: vivaconagua/drops:latest
+    container_name: drops
+    restart: unless-stopped
+    links:
+      - nats
+      - drops-database
+    volumes:
+      - ./volumes/drops/application.conf:/opt/docker/conf/application.conf
+    networks:
+      default:
+        ipv4_address: 172.2.100.1
+
+  drops-database:
+     image: mariadb
+     container_name: drops-database
+     env_file: 
+      - volumes/drops-database/conf.env
+     restart: unless-stopped
+     volumes: 
+       - ./volumes/drops-database/mysql/:/var/lib/mysql/
+     networks:
+       default:
+         ipv4_address: 172.2.200.1
+  
+  #############
+  # dispenser #
+  #############
+  
+  dispenser:
+    image: vivaconagua/dispenser:latest
+    container_name: dispenser
+    restart: unless-stopped
+    volumes:
+      - ./volumes/dispenser/application.conf:/opt/docker/conf/application.conf
+      - ./navigation/:/opt/docker/conf/navigation/jsons/
+    networks:
+      default:
+        ipv4_address: 172.2.100.4
+
+  dispenser-database:
+    image: mongo
+    container_name: dispenser-database
+    restart: always
+    volumes: 
+       - ./volumes/dispenser-database/mongodb/:/data/db/
+    networks:
+      default:
+        ipv4_address: 172.2.200.4
+
+  ##########
+  # Assets #
+  ##########
+  assets:
+    image: vivaconagua/assets:latest
+    container_name: assets-backend
+    restart: unless-stopped
+    volumes:
+      - ./volumes/assets/files/:/public/files/
+    networks:
+      default:
+        ipv4_address: 172.2.100.6
+
+  ################
+  # Architecture #
+  ################
+  
+  nats:
+    image: nats:1.0.6
+    container_name: pool-nats
+    restart: unless-stopped
+    networks:
+      default:
+        ipv4_address: 172.2.150.1 
+
+networks:
+  default:
+    external:
+      name: pool-network
+ 

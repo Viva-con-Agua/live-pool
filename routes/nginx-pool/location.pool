@@ -1,0 +1,206 @@
+#define url Path
+
+###########
+# Backend #
+###########
+
+location ^~ /backend {
+   #Bloob backend
+#  location /backend/bloob {
+#      proxy_pass http://bloob-backend;
+#      proxy_set_header   X-Real-IP $remote_addr;
+#      proxy_set_header   X-Forwarded-Proto $scheme;
+#      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_http_version 1.1;
+#      proxy_set_header   Upgrade $http_upgrade;
+#      proxy_set_header Connection "upgrade";
+#      proxy_set_header   Host $host;
+#  }
+#   #Stream backend
+#   location /backend/stream {
+#      proxy_pass http://stream-backend;
+#      proxy_set_header   X-Real-IP $remote_addr;
+#      proxy_set_header   X-Forwarded-Proto $scheme;
+#      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_http_version 1.1;
+#      proxy_set_header   Upgrade $http_upgrade;
+#      proxy_set_header Connection "upgrade";
+#      proxy_set_header   Host $host;
+#   }
+   #Canal backend
+   location /backend/canal {
+      proxy_pass http://canal-backend;
+      proxy_set_header   X-Real-IP $remote_addr;
+      proxy_set_header   X-Forwarded-Proto $scheme;
+      proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_http_version 1.1;
+      proxy_set_header   Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      proxy_set_header   Host $host;
+   }
+}
+
+location /emotobackend {
+  proxy_pass http://emoto-backend;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_http_version 1.1;
+  proxy_set_header   Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header   Host $http_host;
+}
+
+# Canal frontend
+location /canal {
+  proxy_pass http://canal-frontend;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_http_version 1.1;
+  proxy_set_header   Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header   Host $host;
+}
+
+location /emoto {
+  return 301 /emoto/;
+}
+
+location /emoto/ {
+  proxy_pass http://emoto-frontend;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_http_version 1.1;
+  proxy_set_header   Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header   Host $http_host;
+}
+
+# Drops 
+location /drops {
+  proxy_pass http://drops;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_http_version 1.1;
+  proxy_set_header   Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header   Host $http_host;
+}
+
+
+location /arise {
+  return 301 /arise/;	
+}
+location /arise/ {
+  proxy_pass http://arise;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_http_version 1.1;
+  proxy_set_header   Upgrade $http_upgrade;
+  proxy_set_header Connection "upgrade";
+  proxy_set_header   Host $host;
+}
+
+# Dispenser
+location /dispenser {
+  proxy_pass http://dispenser;
+  proxy_set_header   X-Real-IP $remote_addr;
+  #proxy_set_header   X-Forwarded-Proto $scheme;
+  #proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+}
+
+# Assets
+location /assets {
+  proxy_pass http://assets-backend;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   Host $http_host;
+}
+
+# Pool^1 
+location /pool {
+  proxy_pass http://pool;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+}
+
+# Wiki
+location /wiki {
+  proxy_pass http://wiki;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+}
+
+#Oauth Test 
+location /oauthtest {
+  proxy_pass http://oauthtest;
+}
+
+#Root
+location / {
+  return 301 /arise/#/signin/L3Bvb2wv;
+}
+
+###################
+# Atlassian Suite #
+###################
+
+# Confluence
+location /confluence {
+  proxy_pass http://confluence;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+  proxy_connect_timeout       600;
+  proxy_send_timeout          600;
+  proxy_read_timeout          600;
+  send_timeout                600;
+}
+
+# Confluence synchrony
+location /synchrony {
+  proxy_set_header X-Forwarded-Host $host;
+  proxy_set_header X-Forwarded-Server $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_pass http://172.2.10.1:8091/synchrony;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection "Upgrade";
+}
+
+# Jira
+location /jira {
+  proxy_pass http://jira;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+  proxy_connect_timeout       600;
+  proxy_send_timeout          600;
+  proxy_read_timeout          600;
+  send_timeout                600;
+}
+
+# Bitbucket
+location /bitbucket {
+  proxy_pass http://bitbucket;
+  proxy_set_header   X-Real-IP $remote_addr;
+  proxy_set_header   X-Forwarded-Proto $scheme;
+  proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header   Host $http_host;
+  proxy_set_header   X-Url-Scheme $scheme;
+  proxy_connect_timeout       600;
+  proxy_send_timeout          600;
+  proxy_read_timeout          600;
+  send_timeout                600;
+}
+
